@@ -9,7 +9,7 @@ Video translation client tool and API sample code for Private Preview API.
 # API sample:
 
 ## Video file API:
-   Metadata API: [VideoFileClient.cs](VideoTranslationLib.Private/HttpClient/VideoTranslationMetadataClient.cs)
+   Metadata API: [VideoTranslationMetadataClient.cs](VideoTranslationLib.Private/HttpClient/VideoTranslationMetadataClient.cs)
 
    Video file API: [VideoFileClient.cs](VideoTranslationLib.Private/HttpClient/VideoFileClient.cs)
 
