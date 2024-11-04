@@ -27,8 +27,10 @@ public class VideoTranslationPrivatePreviewHttpClientConfig<TDeploymentEnvironme
         get
         {
             return this.BaseUrl
-                .AppendPathSegment("api")
                 .AppendPathSegment(RouteBase)
+
+                // private preview client sample tool for public is request the private preview API version.
+                .AppendPathSegment("private")
                 .ToUri();
         }
     }
