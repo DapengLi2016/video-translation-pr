@@ -27,8 +27,8 @@ public class VideoTranslationPrivatePreviewHttpClientConfig<TDeploymentEnvironme
         get
         {
             return this.BaseUrl
-                .AppendPathSegment("api")
                 .AppendPathSegment(RouteBase)
+                .AppendPathSegment("private")
                 .ToUri();
         }
     }
