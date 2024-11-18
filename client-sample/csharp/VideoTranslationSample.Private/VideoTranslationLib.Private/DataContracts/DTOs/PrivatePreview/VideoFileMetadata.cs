@@ -5,6 +5,7 @@
 
 namespace Microsoft.SpeechServices.VideoTranslation.DataContracts.DTOs;
 
+using Microsoft.SpeechServices.Common.Client;
 using Microsoft.SpeechServices.CommonLib.Enums;
 using Microsoft.SpeechServices.Cris.Http.DTOs.Public;
 using System;
@@ -26,4 +27,13 @@ public class VideoFileMetadata : StatelessResourceBase
     public Uri AudioFileUri { get; set; }
 
     public TimeSpan? Duration { get; set; }
+
+    // For backword compatiable, only response status when specify it explicitly.
+    // When ApiVersion is null or < 2, Status and LastActionDateTime is null for compatiable.
+    // When ApiVersion >= 2, response Status and LastActionDateTime
+    public OneApiState? Status { get; set; }
+
+    public DateTime? LastActionDateTime { get; set; }
+
+    public VideoTranslationFileUploadKind? UploadKind { get; init; }
 }

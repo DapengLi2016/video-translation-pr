@@ -7,6 +7,9 @@ namespace Microsoft.SpeechServices.VideoTranslation;
 
 using Flurl;
 using Flurl.Http;
+using Microsoft.SpeechServices.Common.Client;
+using Microsoft.SpeechServices.CommonLib;
+using Microsoft.SpeechServices.CommonLib.Enums;
 using Microsoft.SpeechServices.CommonLib.Util;
 using Microsoft.SpeechServices.DataContracts;
 using Microsoft.SpeechServices.VideoTranslation.DataContracts.DTOs;
@@ -14,6 +17,7 @@ using Microsoft.SpeechServices.VideoTranslation.DataContracts.DTOs.FileEntity;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -28,33 +32,13 @@ public class VideoFileClient<TDeploymentEnvironment> :
 
     public override string ControllerName => "videofiles";
 
-    public async Task<string> UploadVideoFileWithStringResponseAsync(
-        string name,
-        string description,
-        CultureInfo locale,
-        int? speakerCount,
-        string videoFilePath)
-    {
-        return await RequestWithRetryAsync(async () =>
-        {
-            var response = PostUploadVideoFileWithResponseAsync(
-                name: name,
-                description: description,
-                locale: locale,
-                speakerCount: speakerCount,
-                videoFilePath: videoFilePath);
-
-            return await response
-                .ReceiveString();
-        }).ConfigureAwait(false);
-    }
-
     public async Task<TVideoFileMetadata> UploadVideoFileAsync<TVideoFileMetadata>(
         string name,
         string description,
         CultureInfo locale,
         int? speakerCount,
-        string videoFilePath)
+        string videoFilePath,
+        Uri videoFileUrl)
         where TVideoFileMetadata : VideoFileMetadata
     {
         return await RequestWithRetryAsync(async () =>
@@ -64,7 +48,8 @@ public class VideoFileClient<TDeploymentEnvironment> :
                 description: description,
                 locale: locale,
                 speakerCount: speakerCount,
-                videoFilePath: videoFilePath);
+                videoFilePath: videoFilePath,
+                videoFileUrl: videoFileUrl);
 
             return await response
                 .ReceiveJson<TVideoFileMetadata>();
@@ -73,7 +58,10 @@ public class VideoFileClient<TDeploymentEnvironment> :
 
     public async Task<PaginatedResources<VideoFileMetadata>> QueryVideoFilesAsync()
     {
-        var url = BuildRequestBase();
+        var url = BuildRequestBase()
+            // Set apiVersion to 2 to response status.
+            .SetQueryParam("apiVersion", "2");
+
         return await RequestWithRetryAsync(async () =>
         {
             return await url.GetAsync()
@@ -171,7 +159,9 @@ public class VideoFileClient<TDeploymentEnvironment> :
         var url = BuildRequestBase()
             .AppendPathSegment("QueryByFileContentSha256")
             .SetQueryParam("locale", locale.Name)
-            .SetQueryParam("fileContentSha256", fileContentSha256);
+            .SetQueryParam("fileContentSha256", fileContentSha256)
+            // Set apiVersion to 2 to response status.
+            .SetQueryParam("apiVersion", "2");
 
         return await RequestWithRetryAsync(async () =>
         {
@@ -204,19 +194,55 @@ public class VideoFileClient<TDeploymentEnvironment> :
         {
             return await url
                 .AppendPathSegment(id.ToString())
+                // Set apiVersion to 2 to response status.
+                .SetQueryParam("apiVersion", "2")
                 .GetAsync()
                 .ReceiveJson<TVideoFileMetadata>()
                 .ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
 
-    private async Task<IFlurlResponse> PostUploadVideoFileWithResponseAsync(
+    public async Task<TVideoFileMetadata> QueryVideoFileUntilTerminatedAsync<TVideoFileMetadata>(Guid id)
+        where TVideoFileMetadata : VideoFileMetadata
+    {
+        var startTime = DateTime.Now;
+        TVideoFileMetadata videoFile = null;
+        OneApiState? lastState = null;
+        do
+        {
+            videoFile = await this.QueryVideoFileAsync<TVideoFileMetadata>(id).ConfigureAwait(false);
+            if (videoFile?.Status == null)
+            {
+                return videoFile;
+            }
+
+            if (videoFile.Status != lastState)
+            {
+                Console.WriteLine(videoFile.Status.Value.AsString());
+                lastState = videoFile.Status;
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(3)).ConfigureAwait(false);
+            Console.Write(".");
+        }
+        while (!new[] { OneApiState.Succeeded, OneApiState.Failed }.Contains(videoFile.Status.Value) &&
+            DateTime.Now - startTime < CommonConst.Http.VideoTranslationTaskExpiredDuration);
+        return videoFile;
+    }
+
+    public async Task<IFlurlResponse> PostUploadVideoFileWithResponseAsync(
         string name,
         string description,
         CultureInfo locale,
         int? speakerCount,
-        string videoFilePath)
+        string videoFilePath,
+        Uri videoFileUrl)
     {
+        if (string.IsNullOrEmpty(videoFilePath) && string.IsNullOrWhiteSpace(videoFileUrl?.OriginalString))
+        {
+            throw new ArgumentException($"Please provide either {nameof(videoFilePath)} or {nameof(videoFileUrl)}");
+        }
+
         if (string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentNullException(nameof(name));
@@ -231,25 +257,36 @@ public class VideoFileClient<TDeploymentEnvironment> :
             {
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    mp.AddString(nameof(VideoFileMetadata.DisplayName), name);
+                    mp.AddString(nameof(VideoFileCreate.DisplayName), name);
                 }
 
                 if (!string.IsNullOrWhiteSpace(description))
                 {
-                    mp.AddString(nameof(VideoFileMetadata.Description), description);
+                    mp.AddString(nameof(VideoFileCreate.Description), description);
                 }
 
                 if (locale != null && !string.IsNullOrEmpty(locale.Name))
                 {
-                    mp.AddString(nameof(VideoFileMetadata.Locale), locale.Name);
+                    mp.AddString(nameof(VideoFileCreate.Locale), locale.Name);
                 }
 
                 if (speakerCount != null)
                 {
-                    mp.AddString(nameof(VideoFileMetadata.SpeakerCount), speakerCount.Value.ToString(CultureInfo.InvariantCulture));
+                    mp.AddString(nameof(VideoFileCreate.SpeakerCount), speakerCount.Value.ToString(CultureInfo.InvariantCulture));
                 }
 
-                mp.AddFile("videoFile", videoFilePath);
+                // When ApiVersion is null or < 2, for video file response, Status and LastActionDateTime is null for compatiable.
+                // When ApiVersion >= 2, response Status and LastActionDateTime
+                mp.AddString("apiVersion", "2");
+                if (!string.IsNullOrWhiteSpace(videoFilePath))
+                {
+                    mp.AddFile("videoFile", videoFilePath);
+                }
+                else if (!string.IsNullOrWhiteSpace(videoFileUrl?.OriginalString))
+                {
+                    mp.AddString(nameof(VideoFileCreate.UploadKind), VideoTranslationFileUploadKind.AzureBlobUrl.AsString());
+                    mp.AddString(nameof(VideoFileCreate.VideoOrAudioFileUrl), videoFileUrl.OriginalString);
+                }
             });
     }
 }

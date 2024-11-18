@@ -121,7 +121,7 @@ public abstract class HttpClientBase<TDeploymentEnvironment>
         OneApiState? state = null;
         var firstTimePrinted = false;
 
-        while (DateTime.Now - startTime < (timeout ?? TimeSpan.FromHours(3)))
+        while (DateTime.Now - startTime < (timeout ?? CommonConst.Http.VideoTranslationTaskExpiredDuration))
         {
             var translation = await this.QueryByIdAsync<T>(id, additionalHeaders).ConfigureAwait(false);
             if (translation == null)

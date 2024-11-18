@@ -11,6 +11,7 @@ public static class VideoTranslationPrivateConstant
     {
         public const string ResponseIntermediateZipFileUrl = "Microsoft-VideoTranslation-ResponseIntermediateZipFileUrl";
         public const string KeepIntermediateZipFile = "Microsoft-VideoTranslation-KeepIntermediateZipFile";
+        public const string DisableTryToReuseCacheZipFile = "Microsoft-VideoTranslation-DisableTryToReuseCacheZipFile";
     }
 
     public static class ApiVersions

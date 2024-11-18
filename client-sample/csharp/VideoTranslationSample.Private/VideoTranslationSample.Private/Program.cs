@@ -133,7 +133,8 @@ public class Program
                             description: null,
                             locale: args.TypedSourceLocale,
                             speakerCount: null,
-                            videoFilePath: args.SourceVideoOrAudioFilePath).ConfigureAwait(false);
+                            videoFilePath: args.SourceVideoOrAudioFilePath,
+                            videoFileUrl: args.TypedVideoFileAzureBlobUrl).ConfigureAwait(false);
 
                         Console.WriteLine(JsonConvert.SerializeObject(
                             videoFile,
@@ -161,7 +162,8 @@ public class Program
                                 description: null,
                                 locale: args.TypedSourceLocale,
                                 speakerCount: null,
-                                videoFilePath: args.SourceVideoOrAudioFilePath).ConfigureAwait(false);
+                                videoFilePath: args.SourceVideoOrAudioFilePath,
+                                videoFileUrl: args.TypedVideoFileAzureBlobUrl).ConfigureAwait(false);
                         }
 
                         Console.WriteLine(JsonConvert.SerializeObject(
@@ -173,9 +175,11 @@ public class Program
 
                 case Mode.UploadVideoOrAudioFileAndCreateTranslation:
                     {
-                        if (string.IsNullOrEmpty(args.SourceVideoOrAudioFilePath))
+                        if (string.IsNullOrEmpty(args.SourceVideoOrAudioFilePath) &&
+                            args.VideoOrAudioFileId == Guid.Empty &&
+                            string.IsNullOrWhiteSpace(args.TypedVideoFileAzureBlobUrl?.OriginalString))
                         {
-                            throw new ArgumentException($"Please provide at least one of {nameof(args.VideoOrAudioFileId)} or {nameof(args.SourceVideoOrAudioFilePath)}");
+                            throw new ArgumentException($"Please provide at least one of {nameof(args.VideoOrAudioFileId)}, {nameof(args.TypedVideoFileAzureBlobUrl)} or {nameof(args.SourceVideoOrAudioFilePath)}");
                         }
 
                         if (args.TypedSourceLocale == null || string.IsNullOrEmpty(args.TypedSourceLocale.Name))
@@ -183,9 +187,18 @@ public class Program
                             throw new ArgumentNullException(nameof(args.TypedSourceLocale));
                         }
 
-                        if (!File.Exists(args.SourceVideoOrAudioFilePath))
+                        if (!string.IsNullOrWhiteSpace(args.SourceVideoOrAudioFilePath) &&
+                            !File.Exists(args.SourceVideoOrAudioFilePath))
                         {
                             throw new FileNotFoundException(args.SourceVideoOrAudioFilePath);
+                        }
+                        else if (!string.IsNullOrWhiteSpace(args.TypedVideoFileAzureBlobUrl?.OriginalString))
+                        {
+                            var (success, error) = await CommonHttpClientHelper.IsUriExistAsync(args.TypedVideoFileAzureBlobUrl).ConfigureAwait(false);
+                            if (!success)
+                            {
+                                throw new InvalidDataException($"Url is not exist: {args.TypedVideoFileAzureBlobUrl}");
+                            }
                         }
 
                         VideoFileMetadata videoOrAudioFile = null;
@@ -205,7 +218,8 @@ public class Program
                                 description: null,
                                 locale: args.TypedSourceLocale,
                                 speakerCount: null,
-                                videoFilePath: args.SourceVideoOrAudioFilePath).ConfigureAwait(false);
+                                videoFilePath: args.SourceVideoOrAudioFilePath,
+                                videoFileUrl: args.TypedVideoFileAzureBlobUrl).ConfigureAwait(false);
                             Console.WriteLine($"Uploaded new video file with ID {videoOrAudioFile.ParseIdFromSelf()} uploaded.");
                         }
                         else

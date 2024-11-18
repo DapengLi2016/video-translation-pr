@@ -66,7 +66,8 @@ public class VideoTranslationPool<TDeploymentEnvironment, TVideoFileMetadata>
                         description: null,
                         locale: args.SourceLocale,
                         speakerCount: null,
-                        videoFilePath: args.VideoFilePath).ConfigureAwait(false);
+                        videoFilePath: args.VideoFilePath,
+                        videoFileUrl: args.VideoFileUrl).ConfigureAwait(false);
                 }
 
                 result.VideoFile = videoFile;

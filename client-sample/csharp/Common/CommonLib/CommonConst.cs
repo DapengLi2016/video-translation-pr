@@ -22,6 +22,8 @@ public static class CommonConst
     {
         public static readonly TimeSpan OperationQueryDuration = TimeSpan.FromSeconds(3);
 
+        public static readonly TimeSpan VideoTranslationTaskExpiredDuration = TimeSpan.FromHours(3);
+
         public static class Headers
         {
             public const string OperationId = "Operation-Id";

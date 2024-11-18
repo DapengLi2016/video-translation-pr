@@ -112,7 +112,7 @@ public class Arguments<TDeploymentEnvironment>
         Description = "Specifies path of source video or audio file.",
         Optional = true,
         UsagePlaceholder = "sourceVideoOrAudioFilePath",
-        RequiredModes = "UploadVideoOrAudioFile,UploadVideoOrAudioFileIfNotExist,UploadVideoOrAudioFileAndCreateTranslation")]
+        OptionalModes = "UploadVideoOrAudioFile,UploadVideoOrAudioFileIfNotExist,UploadVideoOrAudioFileAndCreateTranslation")]
     private string sourceVideoOrAudioFilePath = string.Empty;
 
     [Argument(
@@ -304,6 +304,17 @@ public class Arguments<TDeploymentEnvironment>
         RequiredModes = "UpdateTargetLocaleEdittingWebvttFile",
         OptionalModes = "UpdateCustomLexiconFileIdToTargetLocale")]
     private string targetLocaleIdString = string.Empty;
+
+    [Argument(
+        "videoFileAzureBlobUrl",
+        Description = "Specifies path of input video file azure blob URL.",
+        Optional = true,
+        UsagePlaceholder = "videoFileAzureBlobUrl",
+        OptionalModes = "QueryVideoOrAudioFiles,UploadVideoOrAudioFileAndCreateTranslation,UploadVideoOrAudioFileIfNotExist")]
+    private string videoFileAzureBlobUrl = string.Empty;
+
+    public Uri TypedVideoFileAzureBlobUrl => string.IsNullOrWhiteSpace(this.videoFileAzureBlobUrl) ?
+        null : new Uri(this.videoFileAzureBlobUrl);
 
     public Guid? TypedTtsCustomLexiconFileIdInAudioContentCreation =>
         string.IsNullOrWhiteSpace(ttsCustomLexiconFileIdInAudioContentCreation) ? null :
