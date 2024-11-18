@@ -21,6 +21,8 @@ public class VideoTranslationPoolInputArgs
 
     public string VideoFilePath { get; set; }
 
+    public Uri VideoFileUrl { get; set; }
+
     public CultureInfo SourceLocale { get; set; }
 
     public VideoTranslationVoiceKind? VoiceKind { get; set; }
