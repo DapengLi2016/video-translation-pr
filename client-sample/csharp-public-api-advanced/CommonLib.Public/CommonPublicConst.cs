@@ -44,8 +44,8 @@ public static class CommonPublicConst
     {
         public const string ApiVersion30beta1 = "v3.0-beta1";
         public const string ApiVersion20230401Preview = "2023-04-01-preview";
-        public const string ApiVersion20240520Preview = "2024-05-20-preview";
         public const string ApiVersion20230701Preview = "2023-07-01-preview";
+        public const string ApiVersion20240520Preview = "2024-05-20-preview";
     }
 
     public static class Http

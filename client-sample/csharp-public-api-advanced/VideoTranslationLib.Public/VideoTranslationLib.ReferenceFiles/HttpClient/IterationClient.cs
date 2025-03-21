@@ -207,6 +207,7 @@ public class IterationClient : HttpClientBase
             .AppendPathSegment(iteration.Id)
             .WithHeader(CommonPublicConst.Http.Headers.OperationId, operationId);
 
+        Console.WriteLine(url.Url);
         return await RequestWithRetryAsync(async () =>
         {
             return await url

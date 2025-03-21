@@ -10,13 +10,19 @@ using System;
 
 public partial class CreateIterationAndWaitUntilTerminatedOptions : BaseOptions
 {
-    [Option('p', "enableLipSync", Required = false, HelpText = "Specify whether enable lip sync.")]
-    public bool? EnableLipSync { get; set; }
-
-    [Option('c', "ttsCustomLexiconFileUrl", Required = false, HelpText = "Specify whether TTS custom custom lexicon url.")]
+    [Option("ttsCustomLexiconFileUrl", Required = false, HelpText = "Specify whether TTS custom custom lexicon url.")]
     public Uri TtsCustomLexiconFileUrl { get; set; }
 
-    [Option('u', "ttsCustomLexiconFileIdInAudioContentCreation", Required = false, HelpText = "Specify whether TTS custom custom lexicon file ID in Audio Content Creation.")]
-    public Guid? TtsCustomLexiconFileIdInAudioContentCreation { get; set; }
+    [Option("ttsCustomLexiconFileIdInAudioContentCreation", Required = false, HelpText = "Specify whether TTS custom custom lexicon file ID in Audio Content Creation.")]
+    public Guid TtsCustomLexiconFileIdInAudioContentCreation { get; set; }
+
+    [Option("keepHighFidelityBackgroundAudio", Required = false, HelpText = "Specify whether to keep high fidelity background audio.")]
+    public bool KeepHighFidelityBackgroundAudio { get; set; }
+
+    [Option("exportSegmentRawTtsAudioFiles", Required = false, HelpText = "Export segment raw TTS audio files.")]
+    public bool ExportSegmentRawTtsAudioFiles { get; set; }
+
+    [Option("enableVideoSpeedAdjustment", Required = false, HelpText = "Specify whether enable video speed adjustment.")]
+    public bool EnableVideoSpeedAdjustment { get; set; }
 }
 

@@ -14,4 +14,11 @@ public partial class IterationInput
     public Uri TtsCustomLexiconFileUrl { get; set; }
 
     public Guid? TtsCustomLexiconFileIdInAudioContentCreation { get; set; }
+
+    public bool? KeepHighFidelityBackgroundAudio { get; set; }
+
+    public bool? ExportSegmentRawTtsAudioFiles { get; set; }
+
+    // This may either slow down video for longer translated text or speed up video for shorter translated text.
+    public bool? EnableVideoSpeedAdjustment { get; set; }
 }
