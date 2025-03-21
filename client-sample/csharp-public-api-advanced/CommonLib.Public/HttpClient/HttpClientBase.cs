@@ -52,6 +52,7 @@ public abstract class HttpClientBase
             }
         }
 
+        Console.WriteLine(url.Url);
         return await this.RequestWithRetryAsync(async () =>
         {
             return await url
@@ -67,6 +68,7 @@ public abstract class HttpClientBase
         var url = this.BuildRequestBase(additionalHeaders: additionalHeaders)
             .AppendPathSegment(id.ToString());
 
+        Console.WriteLine(url.Url);
         return await this.RequestWithRetryAsync(async () =>
         {
             return await url
@@ -83,6 +85,7 @@ public abstract class HttpClientBase
         var url = this.BuildRequestBase(additionalHeaders: additionalHeaders)
             .AppendPathSegment(id.ToString());
 
+        Console.WriteLine(url.Url);
         return await this.RequestWithRetryAsync(async () =>
         {
             return await url

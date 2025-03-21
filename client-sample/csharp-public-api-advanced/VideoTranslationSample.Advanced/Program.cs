@@ -5,6 +5,7 @@ using Microsoft.SpeechServices.CommonLib;
 using Microsoft.SpeechServices.CommonLib.Public.Interface;
 using Microsoft.SpeechServices.CommonLib.Util;
 using Microsoft.SpeechServices.Cris.Http.DTOs.Public.VideoTranslation.Public20240520Preview;
+using Microsoft.SpeechServices.VideoTranslationSample.Advanced.HttpClient;
 using Microsoft.SpeechServices.VideoTranslationSample.PublicPreview;
 using Newtonsoft.Json;
 using System;
@@ -77,6 +78,8 @@ public class Program
 
         var operationClient = new OperationClient(httpConfig);
 
+        var segmentClient = new SegmentClient(httpConfig);
+
         switch (baseOptions)
         {
             case CreateTranslationOptions options:
@@ -128,6 +131,18 @@ public class Program
                     break;
                 }
 
+            case QuerySegmentsOptions options:
+                {
+                    var segments = await segmentClient.GetSegmentsAsync(
+                        options.TranslationId,
+                        options.IterationId).ConfigureAwait(false);
+                    Console.WriteLine(JsonConvert.SerializeObject(
+                        segments,
+                        Formatting.Indented,
+                        CommonPublicConst.Json.WriterSettings));
+                    break;
+                }
+
             case QueryTranslationOptions options:
                 {
                     var translation = await translationClient.GetTranslationAsync(
@@ -159,11 +174,12 @@ public class Program
                             SpeakerCount = options.SpeakerCount,
                             SubtitleMaxCharCountPerSegment = options.SubtitleMaxCharCountPerSegment,
                             ExportSubtitleInVideo = options.ExportSubtitleInVideo,
-                            WebvttFile = options.WebvttFileAzureBlobUrl == null ? null : new WebvttFile()
-                            {
-                                Kind = options.WebvttFileKind ?? WebvttFileKind.TargetLocaleSubtitle,
-                                Url = options.WebvttFileAzureBlobUrl,
-                            }
+                            WebvttFile = options.WebvttFile,
+                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation,
+                            TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
+                            KeepHighFidelityBackgroundAudio = options.KeepHighFidelityBackgroundAudio,
+                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
+                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
                         }
                     };
 
@@ -209,11 +225,16 @@ public class Program
                             SubtitleMaxCharCountPerSegment = options.SubtitleMaxCharCountPerSegment,
                             ExportSubtitleInVideo = options.ExportSubtitleInVideo,
                             TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
-                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation == Guid.Empty ? null :
-                                options.TtsCustomLexiconFileIdInAudioContentCreation,
+                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation == Guid.Empty ?
+                                null : options.TtsCustomLexiconFileIdInAudioContentCreation,
+                            KeepHighFidelityBackgroundAudio = options.KeepHighFidelityBackgroundAudio,
+                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
+                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
                             WebvttFile = options.WebvttFileAzureBlobUrl == null ? null : new WebvttFile()
                             {
-                                Kind = options.WebvttFileKind ?? WebvttFileKind.TargetLocaleSubtitle,
+                                Kind = options.WebvttFileKind == WebvttFileKind.None ?
+                                    throw new ArgumentException($"Please specify {nameof(options.WebvttFileKind)}") :
+                                    options.WebvttFileKind,
                                 Url = options.WebvttFileAzureBlobUrl,
                             }
                         }
