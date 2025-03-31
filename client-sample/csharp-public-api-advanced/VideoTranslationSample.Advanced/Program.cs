@@ -210,12 +210,13 @@ public class Program
                             SubtitleMaxCharCountPerSegment = options.SubtitleMaxCharCountPerSegment,
                             ExportSubtitleInVideo = options.ExportSubtitleInVideo,
                             WebvttFile = options.WebvttFile,
-                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation,
+                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation == Guid.Empty ?
+                                null : options.TtsCustomLexiconFileIdInAudioContentCreation,
                             TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
-                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
-                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
-                            EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle,
-                            ExportTargetLocaleSubtitleASSFile = options.ExportTargetLocaleSubtitleASSFile,
+                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles ? true : null,
+                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment ? true : null,
+                            EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle ? true : null,
+                            ExportTargetLocaleSubtitleAssFile = options.ExportTargetLocaleSubtitleAssFile ? true : null,
                         }
                     };
 
@@ -263,9 +264,10 @@ public class Program
                             TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
                             TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation == Guid.Empty ?
                                 null : options.TtsCustomLexiconFileIdInAudioContentCreation,
-                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
-                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
-                            ExportTargetLocaleSubtitleASSFile = options.ExportTargetLocaleSubtitleASSFile,
+                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles ? true : null,
+                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment ? true : null,
+                            EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle ? true : null,
+                            ExportTargetLocaleSubtitleAssFile = options.ExportTargetLocaleSubtitleAssFile ? true : null,
                             WebvttFile = options.WebvttFileAzureBlobUrl == null ? null : new WebvttFile()
                             {
                                 Kind = options.WebvttFileKind == WebvttFileKind.None ?
