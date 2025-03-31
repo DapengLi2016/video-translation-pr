@@ -34,6 +34,14 @@ public static class CommonPublicConst
         };
     }
 
+    public static class EventHub
+    {
+        public static class HeaderNames
+        {
+            public const string EventKind = "MS-VideoTranslation-Event";
+        }
+    }
+
     public static class ExistCodes
     {
         public const int NoError = 0;

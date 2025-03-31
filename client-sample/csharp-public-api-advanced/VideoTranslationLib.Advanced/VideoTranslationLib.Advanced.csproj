@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Enum\**" />
+	  <EmbeddedResource Remove="Enum\**" />
+	  <None Remove="Enum\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Include="..\VideoTranslationLib.Public\VideoTranslationLib.Public\DataContracts\DTOs\Public-2024-05-20-preview\Iteration.cs" Link="DataContracts\DTOs\Public-2024-05-20-preview\Iteration.cs" />
 	  <Compile Include="..\VideoTranslationLib.Public\VideoTranslationLib.Public\DataContracts\DTOs\Public-2024-05-20-preview\IterationInput.cs" Link="DataContracts\DTOs\Public-2024-05-20-preview\IterationInput.cs" />
 	  <Compile Include="..\VideoTranslationLib.Public\VideoTranslationLib.Public\DataContracts\DTOs\Public-2024-05-20-preview\IterationResult.cs" Link="DataContracts\DTOs\Public-2024-05-20-preview\IterationResult.cs" />
@@ -21,7 +27,6 @@
 
 	<ItemGroup>
 	  <Folder Include="DataContracts\DTOs\Public-2024-05-20-preview\" />
-	  <Folder Include="Enum\" />
 	</ItemGroup>
 
 </Project>

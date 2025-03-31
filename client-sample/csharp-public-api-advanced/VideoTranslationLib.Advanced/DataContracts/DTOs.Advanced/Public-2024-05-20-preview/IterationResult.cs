@@ -11,4 +11,6 @@ public partial class IterationResult
 {
     // Below are advanced properties
     public Uri TranslatedAudioFileUrl { get; set; }
+
+    public Uri TargetLocaleSubtitleASSFileUrl { get; set; }
 }

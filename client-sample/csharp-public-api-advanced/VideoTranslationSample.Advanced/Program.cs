@@ -80,8 +80,43 @@ public class Program
 
         var segmentClient = new SegmentClient(httpConfig);
 
+        var configClient = new ConfigurationClient(httpConfig);
+
         switch (baseOptions)
         {
+            case CreateOrUpdateEventHubConfigOptions options:
+                {
+                    await configClient.CreateOrUpdateEventHubConfigAsync(
+                        new EventHubConfig()
+                        {
+                            IsEnabled = options.IsEnabled,
+                            EventHubNamespaceHostName = options.EventHubNamespaceHostName,
+                            EventHubName = options.EventHubName,
+                            ManagedIdentityClientId = (options.ManagedIdentityClientId == Guid.Empty) ?
+                                null : options.ManagedIdentityClientId,
+                            EnabledEvents = options.EnabledEvents,
+                        }).ConfigureAwait(false);
+                    break;
+                }
+
+            case QueryEventHubConfigOptions options:
+                {
+                    var config = await configClient.GetEventHubConfigAsync().ConfigureAwait(false);
+                    Console.WriteLine("EventHub configuration:");
+                    Console.WriteLine(JsonConvert.SerializeObject(
+                        config,
+                        Formatting.Indented,
+                        CommonPublicConst.Json.WriterSettings));
+                    break;
+                }
+
+            case PingEventHubOptions options:
+                {
+                    await configClient.PingEventHubAsync().ConfigureAwait(false);
+                    Console.WriteLine("Requested send ping event.");
+                    break;
+                }
+
             case CreateTranslationOptions options:
                 {
                     if (string.IsNullOrWhiteSpace(options.VideoFileAzureBlobUrl?.OriginalString) &&
@@ -175,11 +210,13 @@ public class Program
                             SubtitleMaxCharCountPerSegment = options.SubtitleMaxCharCountPerSegment,
                             ExportSubtitleInVideo = options.ExportSubtitleInVideo,
                             WebvttFile = options.WebvttFile,
-                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation,
+                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation == Guid.Empty ?
+                                null : options.TtsCustomLexiconFileIdInAudioContentCreation,
                             TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
-                            KeepHighFidelityBackgroundAudio = options.KeepHighFidelityBackgroundAudio,
-                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
-                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
+                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles ? true : null,
+                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment ? true : null,
+                            EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle ? true : null,
+                            ExportTargetLocaleSubtitleAssFile = options.ExportTargetLocaleSubtitleAssFile ? true : null,
                         }
                     };
 
@@ -227,9 +264,10 @@ public class Program
                             TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
                             TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation == Guid.Empty ?
                                 null : options.TtsCustomLexiconFileIdInAudioContentCreation,
-                            KeepHighFidelityBackgroundAudio = options.KeepHighFidelityBackgroundAudio,
-                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
-                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
+                            ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles ? true : null,
+                            EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment ? true : null,
+                            EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle ? true : null,
+                            ExportTargetLocaleSubtitleAssFile = options.ExportTargetLocaleSubtitleAssFile ? true : null,
                             WebvttFile = options.WebvttFileAzureBlobUrl == null ? null : new WebvttFile()
                             {
                                 Kind = options.WebvttFileKind == WebvttFileKind.None ?
