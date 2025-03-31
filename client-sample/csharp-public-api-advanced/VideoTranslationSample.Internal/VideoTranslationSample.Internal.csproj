@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>Microsoft.SpeechServices.VideoTranslationSample.Internal</RootNamespace>
+		<AssemblyName>VideoTranslationSample.Internal</AssemblyName>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\VideoTranslationLib.Public\VideoTranslationLib.ReferenceFiles\HttpClient\IterationClient.cs" Link="HttpClient\IterationClient.cs" />
+    <Compile Include="..\VideoTranslationLib.Public\VideoTranslationLib.ReferenceFiles\HttpClient\OperationClient.cs" Link="HttpClient\OperationClient.cs" />
+    <Compile Include="..\VideoTranslationLib.Public\VideoTranslationLib.ReferenceFiles\HttpClient\TranslationClient.cs" Link="HttpClient\TranslationClient.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\CreateIterationAndWaitUntilTerminatedOptions.cs" Link="AdvancedOptions\CreateIterationAndWaitUntilTerminatedOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\CreateOrUpdateEventHubConfigOptions.cs" Link="AdvancedOptions\CreateOrUpdateEventHubConfigOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\CreateTranslationAndIterationAndWaitUntilTerminatedOptions.cs" Link="AdvancedOptions\CreateTranslationAndIterationAndWaitUntilTerminatedOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\CreateTranslationOptions.cs" Link="AdvancedOptions\CreateTranslationOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\PingEventHubOptions.cs" Link="AdvancedOptions\PingEventHubOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\QueryEventHubConfigOptions.cs" Link="AdvancedOptions\QueryEventHubConfigOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\AdvancedOptions\QuerySegmentsOptions.cs" Link="AdvancedOptions\QuerySegmentsOptions.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\HttpClient\ConfigurationClient.cs" Link="HttpClient\ConfigurationClient.cs" />
+    <Compile Include="..\VideoTranslationSample.Advanced\HttpClient\SegmentClient.cs" Link="HttpClient\SegmentClient.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\BaseOptions.cs" Link="Options\BaseOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\CreateIterationAndWaitUntilTerminatedOptions.cs" Link="Options\CreateIterationAndWaitUntilTerminatedOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\CreateTranslationAndIterationAndWaitUntilTerminatedBaseOptions.cs" Link="Options\CreateTranslationAndIterationAndWaitUntilTerminatedBaseOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\CreateTranslationBaseOptions.cs" Link="Options\CreateTranslationBaseOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\DeleteTranslationOptions.cs" Link="Options\DeleteTranslationOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\QueryIterationOptions.cs" Link="Options\QueryIterationOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\QueryIterationsOptions.cs" Link="Options\QueryIterationsOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\QueryTranslationOptions.cs" Link="Options\QueryTranslationOptions.cs" />
+    <Compile Include="..\VideoTranslationSample\Options\QueryTranslationsOptions.cs" Link="Options\QueryTranslationsOptions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="HttpClient\" />
+    <Folder Include="AdvancedOptions\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Options\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser.NS20" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommonLib.Public\CommonLib.Public.csproj" />
+    <ProjectReference Include="..\Internal\CommonLib.Internal\CommonLib.Internal.csproj" />
+    <ProjectReference Include="..\Internal\VideoTranslationLib.Internal\VideoTranslationLib.Internal.csproj" />
+    <ProjectReference Include="..\VideoTranslationLib.Public\VideoTranslationLib.PublicBase\VideoTranslationLib.PublicBase.csproj" />
+  </ItemGroup>
+
+</Project>

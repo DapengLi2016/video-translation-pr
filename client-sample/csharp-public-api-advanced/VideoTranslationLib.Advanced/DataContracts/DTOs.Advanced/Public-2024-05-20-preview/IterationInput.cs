@@ -15,10 +15,12 @@ public partial class IterationInput
 
     public Guid? TtsCustomLexiconFileIdInAudioContentCreation { get; set; }
 
-    public bool? KeepHighFidelityBackgroundAudio { get; set; }
-
     public bool? ExportSegmentRawTtsAudioFiles { get; set; }
+
+    public bool? EnableOcrCorrectionFromSubtitle { get; set; }
 
     // This may either slow down video for longer translated text or speed up video for shorter translated text.
     public bool? EnableVideoSpeedAdjustment { get; set; }
+
+    public bool? ExportTargetLocaleSubtitleASSFile { get; set; }
 }

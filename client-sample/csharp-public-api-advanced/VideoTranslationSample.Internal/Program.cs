@@ -2,13 +2,15 @@
 
 using CommandLine;
 using Microsoft.SpeechServices.CommonLib;
-using Microsoft.SpeechServices.CommonLib.Public.Interface;
-using Microsoft.SpeechServices.CommonLib.Util;
+using Microsoft.SpeechServices.CommonLib.Attributes;
+using Microsoft.SpeechServices.CommonLib.Enums;
 using Microsoft.SpeechServices.Cris.Http.DTOs.Public.VideoTranslation.Public20240520Preview;
+using Microsoft.SpeechServices.VideoTranslationLib.Internal.HttpClient;
 using Microsoft.SpeechServices.VideoTranslationSample.Advanced.HttpClient;
 using Microsoft.SpeechServices.VideoTranslationSample.PublicPreview;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -62,9 +64,13 @@ public class Program
     static async Task<int> DoRunAndReturnExitCodeAsync(BaseOptions baseOptions)
     {
         ArgumentNullException.ThrowIfNull(baseOptions);
-        var regionConfig = new ApimApiRegionConfig(baseOptions.Region);
 
-        var httpConfig = new VideoTranslationPublicPreviewHttpClientConfig(
+        var env = DeploymentEnvironmentAttribute.ParseFromRegionIdentifier<DeploymentEnvironment>(baseOptions.Region);
+        var regionConfig = new InternalRegionConfig(
+            env,
+            baseOptions.AccessBackendApi);
+
+        var httpConfig = new InternalHttpClientConfig(
             regionConfig: regionConfig,
             subKey: baseOptions.SubscriptionKey)
         {
@@ -86,7 +92,7 @@ public class Program
         {
             case CreateOrUpdateEventHubConfigOptions options:
                 {
-                    await configClient.CreateOrUpdateEventHubConfigAsync(
+                    var config = await configClient.CreateOrUpdateEventHubConfigAsync(
                         new EventHubConfig()
                         {
                             IsEnabled = options.IsEnabled,
@@ -96,6 +102,11 @@ public class Program
                                 null : options.ManagedIdentityClientId,
                             EnabledEvents = options.EnabledEvents,
                         }).ConfigureAwait(false);
+                    Console.WriteLine("EventHub configuration created or updated:");
+                    Console.WriteLine(JsonConvert.SerializeObject(
+                        config,
+                        Formatting.Indented,
+                        CommonPublicConst.Json.WriterSettings));
                     break;
                 }
 
@@ -142,10 +153,8 @@ public class Program
                         },
                     };
 
-                    var operationId = Guid.NewGuid().ToString();
-                    (translation, var headers) = await translationClient.CreateTranslationAsync(
-                        translation: translation,
-                        operationId: operationId).ConfigureAwait(false);
+                    translation = await translationClient.CreateTranslationAndWaitUntilTerminatedAsync(
+                        translation: translation).ConfigureAwait(false);
 
                     Console.WriteLine();
                     Console.WriteLine("Created translation:");
@@ -171,10 +180,14 @@ public class Program
                     var segments = await segmentClient.GetSegmentsAsync(
                         options.TranslationId,
                         options.IterationId).ConfigureAwait(false);
-                    Console.WriteLine(JsonConvert.SerializeObject(
+                    var response = JsonConvert.SerializeObject(
                         segments,
                         Formatting.Indented,
-                        CommonPublicConst.Json.WriterSettings));
+                        CommonPublicConst.Json.WriterSettings);
+
+                    // It may show not correct chars for Chinese chars.
+                    Console.WriteLine(response);
+                    // await File.WriteAllTextAsync(@"E:\temp\a.txt", response).ConfigureAwait(false);
                     break;
                 }
 
@@ -210,10 +223,10 @@ public class Program
                             SubtitleMaxCharCountPerSegment = options.SubtitleMaxCharCountPerSegment,
                             ExportSubtitleInVideo = options.ExportSubtitleInVideo,
                             WebvttFile = options.WebvttFile,
-                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation,
-                            TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
                             ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles,
                             EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment,
+                            TtsCustomLexiconFileIdInAudioContentCreation = options.TtsCustomLexiconFileIdInAudioContentCreation,
+                            TtsCustomLexiconFileUrl = options.TtsCustomLexiconFileUrl,
                             EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle,
                             ExportTargetLocaleSubtitleASSFile = options.ExportTargetLocaleSubtitleASSFile,
                         }
@@ -290,6 +303,7 @@ public class Program
                         Input = new TranslationInput()
                         {
                             EnableLipSync = options.EnableLipSync,
+                            EnableProsodyTransfer = options.EnableProsodyTransfer,
                             SpeakerCount = options.SpeakerCount,
                             SubtitleMaxCharCountPerSegment = options.SubtitleMaxCharCountPerSegment,
                             ExportSubtitleInVideo = options.ExportSubtitleInVideo,

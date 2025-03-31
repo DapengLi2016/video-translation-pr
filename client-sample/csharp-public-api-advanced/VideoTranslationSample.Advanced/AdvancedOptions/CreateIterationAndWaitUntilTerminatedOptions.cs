@@ -16,13 +16,16 @@ public partial class CreateIterationAndWaitUntilTerminatedOptions : BaseOptions
     [Option("ttsCustomLexiconFileIdInAudioContentCreation", Required = false, HelpText = "Specify whether TTS custom custom lexicon file ID in Audio Content Creation.")]
     public Guid TtsCustomLexiconFileIdInAudioContentCreation { get; set; }
 
-    [Option("keepHighFidelityBackgroundAudio", Required = false, HelpText = "Specify whether to keep high fidelity background audio.")]
-    public bool KeepHighFidelityBackgroundAudio { get; set; }
-
     [Option("exportSegmentRawTtsAudioFiles", Required = false, HelpText = "Export segment raw TTS audio files.")]
     public bool ExportSegmentRawTtsAudioFiles { get; set; }
 
     [Option("enableVideoSpeedAdjustment", Required = false, HelpText = "Specify whether enable video speed adjustment.")]
     public bool EnableVideoSpeedAdjustment { get; set; }
+
+    [Option("enableOcrCorrectionFromSubtitle", Required = false, HelpText = "Specify whether enable OCR correction from subtitle.")]
+    public bool EnableOcrCorrectionFromSubtitle { get; set; }
+
+    [Option("exportTargetLocaleSubtitleASSFile", Required = false, HelpText = "Specify whether export target locale subtitle file with ASS format.")]
+    public bool ExportTargetLocaleSubtitleASSFile { get; set; }
 }
 
