@@ -216,7 +216,7 @@ public class Program
                             ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles ? true : null,
                             EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment ? true : null,
                             EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle ? true : null,
-                            ExportTargetLocaleSubtitleAssFile = options.ExportTargetLocaleSubtitleAssFile ? true : null,
+                            ExportTargetLocaleAdvancedSubtitleFile = options.ExportTargetLocaleAdvancedSubtitleFile ? true : null,
                         }
                     };
 
@@ -267,7 +267,7 @@ public class Program
                             ExportSegmentRawTtsAudioFiles = options.ExportSegmentRawTtsAudioFiles ? true : null,
                             EnableVideoSpeedAdjustment = options.EnableVideoSpeedAdjustment ? true : null,
                             EnableOcrCorrectionFromSubtitle = options.EnableOcrCorrectionFromSubtitle ? true : null,
-                            ExportTargetLocaleSubtitleAssFile = options.ExportTargetLocaleSubtitleAssFile ? true : null,
+                            ExportTargetLocaleAdvancedSubtitleFile = options.ExportTargetLocaleAdvancedSubtitleFile ? true : null,
                             WebvttFile = options.WebvttFileAzureBlobUrl == null ? null : new WebvttFile()
                             {
                                 Kind = options.WebvttFileKind == WebvttFileKind.None ?

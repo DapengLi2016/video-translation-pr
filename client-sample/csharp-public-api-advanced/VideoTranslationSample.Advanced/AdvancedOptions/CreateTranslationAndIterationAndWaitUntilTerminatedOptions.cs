@@ -40,8 +40,8 @@ public partial class CreateTranslationAndIterationAndWaitUntilTerminatedOptions 
     [Option("enableOcrCorrectionFromSubtitle", Required = false, HelpText = "Specify whether enable OCR correction from subtitle.")]
     public bool EnableOcrCorrectionFromSubtitle { get; set; }
 
-    [Option("exportTargetLocaleSubtitleAssFile", Required = false, HelpText = "Specify whether export target locale subtitle file with ASS format.")]
-    public bool ExportTargetLocaleSubtitleAssFile { get; set; }
+    [Option("exportTargetLocaleAdvancedSubtitleFile", Required = false, HelpText = "Specify whether export target locale advanced subtitle file with format.")]
+    public bool ExportTargetLocaleAdvancedSubtitleFile { get; set; }
 
 }
 
