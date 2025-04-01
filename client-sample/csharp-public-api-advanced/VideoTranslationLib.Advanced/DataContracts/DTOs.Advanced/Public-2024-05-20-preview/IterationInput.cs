@@ -22,5 +22,5 @@ public partial class IterationInput
     // This may either slow down video for longer translated text or speed up video for shorter translated text.
     public bool? EnableVideoSpeedAdjustment { get; set; }
 
-    public bool? ExportTargetLocaleSubtitleAssFile { get; set; }
+    public bool? ExportTargetLocaleAdvancedSubtitleFile { get; set; }
 }
